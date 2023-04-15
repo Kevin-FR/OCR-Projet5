@@ -16,61 +16,65 @@ const slides = [
 		"tagLine":"Autocollants <span>avec découpe laser sur mesure</span>"
 	}
 ]
-
+"use strict"
 const btnPrev = document.querySelector(".arrow_left");
 const btnNext = document.querySelector(".arrow_right");
 const dots = document.querySelector(".dots");
-const image = document.getElementsByClassName("banner-img").item(0);
-const image_text = document.getElementById("banner").getElementsByTagName('p').item(0);
+const image = document.querySelector("#banner");
 let str = '';
-let number = 0;
-document.body.onload = addDots;
+let numImage = 0;
 
-// Add dots
-function addDots(){
-	for (let i = 0; i < slides.length; i++) {
-		let dot = document.createElement("div");
-		if(i == 0){
-		dot.classList.add("dot");
-		dot.classList.add("dot_selected");
+
+const addDots = (numImage) => {
+	document.querySelector("#dots").innerHTML = '';
+	let i = 0;
+	for(slide of slides){
+		if(i === numImage){
+			dots.insertAdjacentHTML("beforeend",`<div class="dot dot_selected"></div>`);
 		}else{
-		dot.classList.add("dot");
+			dots.insertAdjacentHTML("beforeend",`<div class="dot"></div>`);
 		}
-		dots.insertAdjacentElement("beforeend",dot);
-	  }
-
+		i++;
+	}
 }
 
-// Slide function
-function getSlide(Dir){
-	number = number + Dir;
-	//console.log("Number " + number);
-	if(number < 0){
-		number = slides.length - 1;
-	}
-	if(number >= slides.length){
-		number = 0;
-	}
-	// Change image
-	image.src= "./assets/images/slideshow/" + slides[number].image;
-	// Change text
-	image_text.innerHTML = slides[number].tagLine;
-
-	//reset all dots
-	for (let i = 0; i < slides.length; i++) {
-		let dots_load = dots.getElementsByClassName('dot').item(i);
-		dots_load.classList.remove('dot_selected');
+const removeSlide = () =>{
+	if (image.children.length > 2) {
+		image.lastElementChild.remove();
+		image.lastElementChild.remove();
 	  }
-	// Add selected dot
-	  let dots_load = dots.getElementsByClassName('dot').item(number);
-	  dots_load.classList.add('dot_selected');
-	//console.log(slides[number].image);
 }
 
-btnPrev.addEventListener("click", function () {
-	getSlide(-1);
+const getSlide = (numImage) => {
+	image.insertAdjacentHTML('beforeend', `<img class="banner-img" src="./assets/images/slideshow/`
+	+slides[numImage].image+
+	`" alt="Banner Print-it"><p>`
+	+slides[numImage].tagLine+
+	`</p>`);
+}
+
+
+document.body.onload = getSlide(0);
+document.body.onload = addDots(0);
+
+btnPrev.addEventListener("click",  ()=> {
+	if(numImage === 0){
+		numImage = slides.length -1;
+	}else{
+		numImage--;
+		}
+	removeSlide();
+	getSlide(numImage);
+	addDots(numImage);
 });
 
-btnNext.addEventListener("click", function () {
-	getSlide(+1);
+btnNext.addEventListener("click", ()=> {
+	if(numImage === slides.length - 1){
+		numImage = 0;
+	}else{
+	numImage++;
+	}
+	removeSlide();
+	getSlide(numImage);
+	addDots(numImage);
 });
