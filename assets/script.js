@@ -1,7 +1,7 @@
 const slides = [
 	{
 		"image":"slide1.jpg",
-		"tagLine":"Impressions tous formats <span>en boutique et en ligne</span>"
+		"tagLine":"Impressions tout formats <span>en boutique et en ligne</span>"
 	},
 	{
 		"image":"slide2.jpg",
@@ -20,8 +20,7 @@ const slides = [
 const btnPrev = document.querySelector(".arrow_left");
 const btnNext = document.querySelector(".arrow_right");
 const dots = document.querySelector(".dots");
-const image = document.querySelector("#banner");
-let str = '';
+const banner = document.querySelector("#banner");
 let numImage = 0;
 
 
@@ -38,24 +37,27 @@ const addDots = (numImage) => {
 	}
 }
 
-const removeSlide = () =>{
-	if (image.children.length > 2) {
-		image.lastElementChild.remove();
-		image.lastElementChild.remove();
-	  }
-}
+
 
 const getSlide = (numImage) => {
-	image.insertAdjacentHTML('beforeend', `<img class="banner-img" src="./assets/images/slideshow/`
-	+slides[numImage].image+
-	`" alt="Banner Print-it"><p>`
-	+slides[numImage].tagLine+
-	`</p>`);
+	const image = banner.querySelector('.banner-img');
+	if(!image){
+		banner.insertAdjacentHTML('beforeend', `<img class="banner-img" src="./assets/images/slideshow/`
+		+slides[numImage].image+
+		`" alt="Banner Print-it"><p>`
+		+slides[numImage].tagLine+
+		`</p>`);
+	}else{
+		image.setAttribute("src", `./assets/images/slideshow/${slides[numImage].image}`);
+		banner.querySelector('p').innerHTML = slides[numImage].tagLine;
+	}
+	
+	
 }
 
 
-document.body.onload = getSlide(0);
-document.body.onload = addDots(0);
+document.body.onload = getSlide(numImage);
+document.body.onload = addDots(numImage);
 
 btnPrev.addEventListener("click",  ()=> {
 	if(numImage === 0){
@@ -63,7 +65,6 @@ btnPrev.addEventListener("click",  ()=> {
 	}else{
 		numImage--;
 		}
-	removeSlide();
 	getSlide(numImage);
 	addDots(numImage);
 });
@@ -74,7 +75,6 @@ btnNext.addEventListener("click", ()=> {
 	}else{
 	numImage++;
 	}
-	removeSlide();
 	getSlide(numImage);
 	addDots(numImage);
 });
